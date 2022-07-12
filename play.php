@@ -1,0 +1,183 @@
+<?php
+if (!isset($_SESSION['game_data']['board'])) {
+	header('location: nieuw-spel');
+	exit;
+}
+$board = $_SESSION['game_data']['board'];
+
+// set overlay data in case of page refreshing
+if ($_SESSION['game_data']['status'] == 'active') {
+    $overlay_text = 'Oeps er gaat iets niet helemaal goed..';
+    $show_overlay = '';
+} else {
+    if ($_SESSION['game_data']['status'] == 'checkmate') {
+        $overlay_text = $_SESSION['game_data']['winner'].' heeft gewonnen';
+    } else {
+        $overlay_text = 'Gelijkspel';
+    }
+    $show_overlay = 'show';
+}
+
+$pieces_on_team = [
+	'top' => [
+		'pawn' 		=> 8,
+		'horse' 	=> 2,
+		'bishop' 	=> 2,
+		'tower' 	=> 2,
+		'queen' 	=> 1,
+		'king' 		=> 1,
+	],
+	'bottom' => [
+		'pawn' 		=> 8,
+		'horse' 	=> 2,
+		'bishop' 	=> 2,
+		'tower' 	=> 2,
+		'queen' 	=> 1,
+		'king' 		=> 1, 
+	],
+];
+$captured = [
+	'top' 		=> '',
+	'bottom' 	=> '',
+];
+
+foreach ($board['squares'] as $piece) {
+	if ($piece['name'] == '') {
+		continue;
+	}
+	$pieces_on_team[$piece['team']][$piece['name']]--;
+}
+foreach ($pieces_on_team as $team => $missing_array) {
+	foreach ($missing_array as $name => $amount_missing) {
+		$captured[$team] .= str_repeat($icons[$name], $amount_missing);
+	}
+}
+
+?>
+<div class="main" style="--piece-color: <?= $_SESSION['game_data']['color'] ?>; --shadow-color: <?= $_SESSION['game_data']['shadow'] ?>;">
+	<header>
+		<div class="place-holder"></div>
+		<h1>Schaken</h1>
+		<div class="place-holder"></div>
+	</header>
+	<div class="content">
+		<div class="game-container">
+
+			<div class="player-info">
+				<div class="user">
+					<?= $_SESSION['game_data']['bot_icon'] ?>
+					<div>
+						<span><?= $_SESSION['game_data']['bot_name'] ?></span>
+						<span><?= $_SESSION['game_data']['level'] ?></span>
+					</div>
+				</div>
+
+				<div class="captured bottom"><?= $captured['bottom'] ?></div>
+			</div>
+
+            <div class="board-container">
+                <table id="board">
+                    <?php
+                    for ($i=0; $i < 8; $i++) {
+                        echo '<tr>';
+                            for ($j=0; $j < 8; $j++) {
+                                $cor = "$j-$i";
+                                $piece = get_piece($board, $cor);
+                                $content = $piece['name'] != '' ? generate_piece_html($piece['name'], $piece['team']) : '';
+                                echo "<td id='$cor'>$content</td>";
+                            }
+                        echo '</tr>';
+                    }
+                    ?>
+                </table>
+                <div id="overlay" class="<?= $show_overlay ?>">
+                    <h2><?= $overlay_text ?></h2>
+                    <a href="nieuw-spel">Nieuw Spel</a>
+                </div>
+            </div>
+
+
+			<div class="player-info">
+				<div class="user">
+					<i class="fa-duotone fa-user-chef"></i>
+					<div>
+						<span><?= $_COOKIE['name'] ?></span>
+						<span>(Jij)</span>
+					</div>
+				</div>
+
+				<div class="captured top"><?= $captured['top'] ?></div>
+			</div>
+
+		</div>
+
+		<div class="side-panel">
+			<h2>Opties</h2>
+			<div class="splitter"></div>
+			<button id="undo">Undo</button>
+			<button id="hint">Hint</button>
+			<button><a href="nieuw-spel">Nieuw Spel</a></button>
+			<button><a target="_blank" href="../../../oldFolders/senarioMaker/new/index.html">Sandbox</a></button>
+			<button><a target="_blank" href="test">testen</a></button>
+		</div>
+	</div>
+</div>
+<?php
+
+if (!$_SESSION['game_data']['begins']) {
+
+    $move = calculate_move($board, 'top')['move'];
+
+    $_SESSION['game_data']['board'] = $board;
+    $_SESSION['game_data']['begins'] = true;
+
+    $from   = cor_string($move['from']);
+    $to     = cor_string($move['to']);
+
+    $_SESSION['game_data']['move_history'][] = [
+
+        'from'  => [
+            'coordinate' => $from,
+            'piece'      => get_piece($board, $from),
+        ],
+        'to'    => [
+            'coordinate' => $to,
+            'piece'      => get_piece($board, $to),
+		],
+
+        'castling' => check_castling($board, $move['from'], $move['to']),
+    ];
+
+    move_piece($board, $move['from'], $move['to']);
+    ?>
+    <script>
+        setTimeout(() => {
+            let toCor = JSON.parse('<?= json_encode($move['to']) ?>');
+            let fromCor = JSON.parse('<?= json_encode($move['from']) ?>');;
+
+            let toElement = document.getElementById(`${toCor.x}-${toCor.y}`);
+            let fromElement = document.getElementById(`${fromCor.x}-${fromCor.y}`);
+
+            let cellHeight = document.querySelector('td').offsetHeight;
+            let cellWidth = document.querySelector('td').offsetWidth;
+
+            let data = fromElement.querySelector('div');
+
+            data.style.left = ((toCor.x - fromCor.x) * cellWidth) + "px";
+            data.style.top = ((toCor.y - fromCor.y) * cellHeight)+ "px";
+
+            setTimeout(() => {
+                data.style.left = '0px';
+                data.style.top = '0px';
+
+                fromElement.classList.add("move-from");
+                toElement.classList.add("move-to");
+
+                toElement.innerHTML = '';
+                toElement.appendChild(data);
+            }, 500);
+        }, 300);
+    </script>
+    <?php
+}
+?>
