@@ -64,9 +64,9 @@ $css_vars 	= '
 ?>
 <div class="main" style="<?= $css_vars ?>">
 	<header>
-		<div class="place-holder"></div>
+		<a href="http://schaken.sanderbrilman.nl/index.php?version-select=true"><i class="fa-duotone fa-chevron-left"></i> Versie overzicht</a>
 		<h1>Schaken</h1>
-		<div class="place-holder"></div>
+		<a href="http://schaken.sanderbrilman.nl/index.php?version-select=true"><i class="fa-duotone fa-chevron-left"></i> Versie overzicht</a>
 	</header>
 	<div class="content">
 		<div class="game-container">

@@ -44,6 +44,16 @@ body {
 	color: var(--header-text-color);
 }
 
+.main > header > a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 0px 18px;
+}
+
+.main > header > a:last-child {
+    visibility: hidden;
+}
+
 .content {
 	display: flex;
 	flex-direction: column;
