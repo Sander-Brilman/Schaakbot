@@ -61,6 +61,7 @@ label > p {
     font-size: 25px;
     color: rgba(0, 0, 0, 0);
     animation: appear_text 1.5s ease-in-out 3.5s 1 normal forwards;
+    text-align: center;
 }
 
 h1 {
