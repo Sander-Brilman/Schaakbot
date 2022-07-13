@@ -6,12 +6,14 @@ require_once("assets/php/pieces_data.php");
 require_once("assets/php/chess_bot_functions.php");
 
 $url_array 	= $_SERVER['REQUEST_URI'];
-$url_array 	= str_replace("/phprunning/website/subdomain_projects/chess/newFolders/versions/v3new/", '', $url_array);
+$url_array 	= str_replace("/phprunning/website/subdomain_projects/chess/newFolders/versions/v3/", '', $url_array);
 $url_array 	= explode('/', $url_array);
 
 foreach ($url_array as $key => $value) {
 	$url_array[$key] = explode('?', $value)[0];
 }
+
+include("assets/php/process_post.php");
 
 $include      = 'play.php';
 $custom_pages = [

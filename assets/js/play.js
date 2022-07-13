@@ -222,6 +222,7 @@ document.getElementById("hint").onclick = function() {
 }
 
 document.getElementById("undo").onclick = function() {
+    $('#undo').attr('disabled', true);
 	$(document).ready(function() {
 		const url = 'assets/php/undo.php';
 		const postData = {};
@@ -252,6 +253,8 @@ document.getElementById("undo").onclick = function() {
 				resetSquares();
 				makeBoardInteractive();
 				reloadCapturedPieces();
+
+                $('#undo').attr('disabled', false);
 			}, delay);
 		});
 		resetSquares();
