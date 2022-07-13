@@ -1,18 +1,13 @@
 @keyframes overlay_effect {
-    0% {
-        background: rgba(0, 0, 0, 0);
-        /* visibility: hidden; */
-    }
-    100% {
-
-    }
+    0%   { background: rgba(0, 0, 0, 0);}
+    100% { }
 }
 
 body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-    padding: 25px 0px;
+    padding: 25px 0px 0px 0px;
 }
 
 .splitter {
@@ -37,7 +32,6 @@ body {
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-	
 	padding: 0px;
 	margin: 0px;
 	width: 100% !important;
@@ -279,15 +273,12 @@ td > div {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-
 	color: var(--piece-color);
 	text-shadow: var(--shadow-color) 0px 0px 4px;
-
     position: relative;
 	transition: top 0.5s, left 0.5s;
 	top: 0px;
 	left: 0px;
-
     font-size: 22px;
 }
 
@@ -300,21 +291,15 @@ td>section>button {
 	color: white;
 }
 
-td:nth-child(even) {
-	background-color: rgb(135 91 44);
+td {
+    background-color: var(--square-color-1);
 }
 
-td:nth-child(odd) {
-	background-color: wheat;
-}
+td:nth-child(even) { background-color: var(--square-color-1); }
+td:nth-child(odd) {	background-color: var(--square-color-2); }
 
-tr:nth-child(even)>td:nth-child(odd) {
-	background-color: rgb(135 91 44);
-}
-
-tr:nth-child(even)>td:nth-child(even) {
-	background-color: wheat;
-}
+tr:nth-child(even)>td:nth-child(odd) { background-color: var(--square-color-1); }
+tr:nth-child(even)>td:nth-child(even) {	background-color: var(--square-color-2); }
 
 .top {
     filter: invert();
@@ -417,7 +402,6 @@ tr:nth-child(even)>td:nth-child(even) {
         outline-offset: -6px;
         outline-width: 5px;
     }
-
 }
 
 
@@ -437,7 +421,6 @@ tr:nth-child(even)>td:nth-child(even) {
     td > div {
         font-size: 30px;
     }
-    
 }
 
 @media screen and (min-width: 700px) {
@@ -468,7 +451,6 @@ tr:nth-child(even)>td:nth-child(even) {
     td > div {
         font-size: 32px;
     }
-
 }
 
 @media screen and (min-width: 800px) {
@@ -493,15 +475,7 @@ tr:nth-child(even)>td:nth-child(even) {
 
     .focus, .move-to {
         outline-offset: -9px;
-        outline-width: 7.5px;
-    }
-
-    tr:nth-child(even)>td:nth-child(even) {
-        background-color: wheat;
-    }
-
-    td:nth-child(even) {
-        background-color: rgb(135 91 44);
+        outline-width: 8px;    
     }
 
     .hint-to, .hint-from {

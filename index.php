@@ -28,7 +28,7 @@ foreach ($custom_pages as $title => $script) {
 	}
 }
 
-// Special cases
+// Special case
 if (!isset($_COOKIE['name'])) {
     $include = 'get_name.php';
 }
@@ -54,13 +54,13 @@ $icons = [
 		<link rel="stylesheet" href="assets/css/icons.css">
 		<link rel="stylesheet" href="assets/css/style.css">
 		<?php 
-		if (file_exists('assets/css/'.str_replace('.php', '.css', $include))) {
-			echo '<link rel="stylesheet" href="assets/css/'.str_replace('.php', '.css', $include).'">';
-		}
+        $file = 'assets/css/'.str_replace('.php', '.css', $include);
+		if (file_exists($file)) echo '<link rel="stylesheet" href="'.$file.'">';
+
+        $file = 'assets/js/'.str_replace('.php', '.js', $include);
+		if (file_exists($file)) echo '<script src="'.$file.'" defer></script>';
 		?>
-
 		<script src="assets/js/jQuery.js"></script>
-
 
 		<title>Schaken - v3 | Sander Brilman</title>
 	</head>
@@ -68,9 +68,6 @@ $icons = [
 	<body>
 		<?php
 		include $include;
-
-        $file = 'assets/js/'.str_replace('.php', '.js', $include);
-		if (file_exists($file)) echo '<script src="'.$file.'"></script>';
 		?>
 	</body>
 </html>

@@ -1,8 +1,8 @@
 {
-    "header": "Een experimentele bot waar ik nog aan werk",
-    "info": "Hopelijk kan ik door de snelheid van <p class='version'>v2</p> en de techniek van <p class='version'>v1</p> te combineren een goede en snelle bot maken.",
+    "header": "nieuwe bot, nieuwe uitstraling, een nieuwe beleving!",
+    "info": "Dit is beste versie van het schaak programma. Met een compleet nieuwe uitstraling en een nieuwe (betere) bot is deze versie de standaard.",
     "stats": {
-        "speed": "8000",
-        "level": "0"
+        "speed": "150",
+        "level": "60"
     }
 }

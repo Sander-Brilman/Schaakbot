@@ -53,8 +53,16 @@ foreach ($pieces_on_team as $team => $missing_array) {
 	}
 }
 
+$color_2 	= $_SESSION['game_data']['color'] == 'white' ? 'rgb(135 91 44)' : 'wheat';
+$color_1 	= $_SESSION['game_data']['color'] == 'white' ? 'wheat' : 'rgb(135 91 44)';
+$css_vars 	= '
+--piece-color: '.$_SESSION['game_data']['color'].';
+--shadow-color: '.$_SESSION['game_data']['shadow'].';
+--square-color-1: '.$color_1.';
+--square-color-2: '.$color_2.';
+';
 ?>
-<div class="main" style="--piece-color: <?= $_SESSION['game_data']['color'] ?>; --shadow-color: <?= $_SESSION['game_data']['shadow'] ?>;">
+<div class="main" style="<?= $css_vars ?>">
 	<header>
 		<div class="place-holder"></div>
 		<h1>Schaken</h1>
@@ -99,8 +107,8 @@ foreach ($pieces_on_team as $team => $missing_array) {
 
 			<div class="player-info">
 				<div class="user">
-					<i class="fa-duotone fa-user-chef"></i>
-					<div>
+                    <i class="fa-duotone fa-user"></i>
+                    <div>
 						<span><?= $_COOKIE['name'] ?></span>
 						<span>(Jij)</span>
 					</div>
@@ -117,8 +125,6 @@ foreach ($pieces_on_team as $team => $missing_array) {
 			<button id="undo">Undo</button>
 			<button id="hint">Hint</button>
 			<button><a href="nieuw-spel">Nieuw Spel</a></button>
-			<button><a target="_blank" href="../../../oldFolders/senarioMaker/new/index.html">Sandbox</a></button>
-			<button><a target="_blank" href="test">testen</a></button>
 		</div>
 	</div>
 </div>

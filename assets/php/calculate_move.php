@@ -39,19 +39,18 @@ if (!in_array($to_cor, $movements['movements'])) {
 }
 
 $_SESSION['game_data']['move_history'][] = [
-    'from'  => [
+    'from' => [
         'coordinate' => $from_cor_str,
         'piece'      => get_piece($board, $from_cor_str),
     ],
-    'to'    => [
+    'to' => [
         'coordinate' => $to_cor_str,
         'piece'      => get_piece($board, $to_cor_str),
     ],
 
-	'castling'		=> check_castling($board, $from_cor, $to_cor),
+	'castling'		 => check_castling($board, $from_cor, $to_cor),
 ];
 move_piece($board, $from_cor, $to_cor);
-
 
 foreach ($board['squares'] as $piece) {
 	if ($piece['team'] == 'top') {
@@ -72,21 +71,21 @@ if ($num_moves == 0) {
 
 } else {
 
-	$bot_move_data  = calculate_move($board, 'top');
+	$bot_move_data  = calculate_move($board, 'top', $_SESSION['game_data']['level']);
 	$return_move	= $bot_move_data['move'];
 
 	$_SESSION['game_data']['move_history'][] = [
 
-        'from'  => [
+        'from' => [
             'coordinate' => cor_string($return_move['from']),
             'piece'      => get_piece($board, $return_move['from']),
         ],
-        'to'  => [
+        'to' => [
             'coordinate' => cor_string($return_move['to']),
             'piece'      => get_piece($board, $return_move['to']),
         ],
 
-		'castling' => check_castling($board, $from_cor, $to_cor),
+		'castling'       => check_castling($board, $from_cor, $to_cor),
 	];
 
 	move_piece($board, $return_move['from'], $return_move['to']);
@@ -99,6 +98,7 @@ if ($num_moves == 0) {
 		$_SESSION['game_data']['winner'] = 'none';
 	}
 
+    $return_move['message'] = $bot_move_data['message'];
 }
 
 $return_data = [

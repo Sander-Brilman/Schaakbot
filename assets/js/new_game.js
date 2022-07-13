@@ -1,8 +1,6 @@
-const levelInput = document.getElementById('level');
-const l = console.log;
 function updateLevel() {
 	let displayText = '0';
-	let number      = Math.round(levelInput.value / 200) * 200;
+	let number      = Math.round($('#level').val() / 200) * 200;
 	switch (number) {
 		case 200:
 			displayText = '1';
@@ -24,11 +22,7 @@ function updateLevel() {
 			displayText = '5';
 			break;
 	}
-	document.querySelector('label > span').innerHTML = ` - ${displayText}`;
-}
-
-levelInput.onchange = function() {
-	updateLevel();
+	$('label > span').html(` - ${displayText}`);
 }
 
 setInterval(() => {
@@ -39,14 +33,16 @@ setInterval(() => {
 document.querySelectorAll('.radio-container').forEach(element => {
 	element.onclick = function() {
 		if (element.querySelector('input').getAttribute('checked') == null) {
-			document.querySelectorAll(".radio-container > input").forEach(input => {
-				input.removeAttribute('checked');
-			});
+			$(".radio-container > input").each(function() {
+                $(this).removeAttr("checked");
+            });
+
 			toggleColorPicker(false);
 			element.querySelector('input').setAttribute('checked', true);
 		}
 	}
 });
+
 
 document.querySelectorAll('.color-row').forEach(row => {
 	row.onclick = function() {
@@ -54,41 +50,33 @@ document.querySelectorAll('.color-row').forEach(row => {
 	}
 })
 
-let toggleIcon = document.getElementById('toggle');
 let active = false;
-toggleIcon.onclick = function() {
+$('#toggle').click(function() {
 	toggleColorPicker();
-}
+})
 
 function toggleColorPicker(state = null) {
-	if (state == null) {
-		active = active ? false : true;
-	} else {
-		active = state;
-	}
-	if (active) {
-		toggleIcon.style.transform = 'rotate(0deg)';
-		document.querySelector('.input-row').style.height = '210px';
-		setTimeout(() => {
-			document.querySelector('.color-picker').style.visibility = 'visible';
-		}, 400)
-	} else {
-		toggleIcon.style.transform = 'rotate(90deg)';
-		document.querySelector('.input-row').style.height = '90px';
-		setTimeout(() => {
-			document.querySelector('.color-picker').style.visibility = 'hidden';
-		}, 75)
-	}
+    active = state == null ? !active : state;
+
+    let degrees     = active ? '0' : '90';
+    let height      = active ? '210' : '90';
+    let time_out    = active ? 500 : 75
+    let visibility  = active ? 'visible' : 'hidden';
+
+    $('#toggle').css('transform', `rotate(${degrees}deg)`);
+    $('.input-row:first-of-type').css('height', `${height}px`);
+
+    setTimeout(() => {
+        $('.color-picker').css('visibility', visibility);
+    }, time_out);
 }
 
 function updateColors() {
-	let shadowInput = document.getElementById('custom_shadow');
-	let colorInput = document.getElementById('custom_color');
-	let customColorIcon = document.querySelector('.radio-container:last-of-type > i');
+	let color = $('#custom_shadow').val();
+	$('.radio-container:last-of-type > i').css('textShadow', `${color} 0px 0px 4px`);
 
-	let color = shadowInput.value;
-	customColorIcon.style.textShadow = `${color} 0px 0px 4px`;
-
-	color = colorInput.value;
-	customColorIcon.style.color = color;
+	color = $('#custom_color').val();
+	$('.radio-container:last-of-type > i').css('color', color);
 }
+
+

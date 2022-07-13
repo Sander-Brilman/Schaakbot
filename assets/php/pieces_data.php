@@ -4,12 +4,13 @@ require_once('functions.php');
 function pawn_movements(array $board, array $cor)
 {
 	/** 
-	 * calculate movements + the attack squares for the pawn
+	 * Calculate movements and the attack squares for the pawn.
+     * Rather ugly code but it works..
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the pawn
+	 * @return array array with the movements & attack squares
 	*/
 	$current_cor = $cor;
 	$piece = get_piece($board, $cor);
@@ -29,8 +30,9 @@ function pawn_movements(array $board, array $cor)
 
             $possible_movements['movements'][] = $current_cor;
 
-            // 2 steps ahead if it hasent moved yet
+
             if (!$piece['has_moved']) {
+
                 $current_cor['y'] += $team == "top" ? 1 : -1;
                 $square_data = get_piece($board, $current_cor);
                 if (valid_cor($current_cor) && $square_data['name'] == "") {
@@ -67,12 +69,12 @@ function pawn_movements(array $board, array $cor)
 function horse_movements(array $board, array $cor)
 {
 	/** 
-	 * calculate movements + the attack squares for the horse
+	 * Calculate movements and the attack squares for the horse
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the horse
+	 * @return array array with the movements & attack squares
 	*/
 	$team = get_piece($board, $cor)['team'];
 	$opposite_team = opposite_team($team);
@@ -114,12 +116,12 @@ function horse_movements(array $board, array $cor)
 function bishop_movements(array $board, array $cor)
 {
 	/** 
-	 * calculate movements + the attack squares for the bishop
+	 * Calculate movements and the attack squares for the bishop.
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the bishop
+	 * @return array array with the movements & attack squares
 	*/
 
 	$piece = get_piece($board, $cor);
@@ -165,14 +167,13 @@ function bishop_movements(array $board, array $cor)
 function tower_movements(array $board, array $cor)
 {
 	/** 
-	 * calculate movements + the attack squares for the tower
+	 * Calculate movements and the attack squares for the tower
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the tower
+	 * @return array array with the movements & attack squares
 	*/
-
 	$piece = get_piece($board, $cor);
 	$opposite_team = opposite_team($piece['team']);
 	$possible_movements = [
@@ -217,13 +218,13 @@ function tower_movements(array $board, array $cor)
 function queen_movements(array $board, array $cor)
 {
 	/** 
-	 * calculate movements + the attack squares for the queen
-	 * uses the tower and bishop calculations
+	 * Calculate movements and the attack squares for the queen
+	 * uses the tower and bishop calculations.
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the queen
+	 * @return array array with the movements & attack squares
 	*/
 	$bishop_movements = bishop_movements($board, $cor);
 	$tower_movements  = tower_movements ($board, $cor);
@@ -238,18 +239,18 @@ function queen_movements(array $board, array $cor)
 
 function king_movements(array $board, array $cor){
 	/** 
-	 * calculate movements + the attack squares for the king
+	 * Calculate movements and the attack squares for the king
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares for the king
+	 * @return array array with the movements & attack squares
 	*/
 	$towers_x               = [0,7];
 	$piece                  = get_piece($board, $cor);
 	$opposite_team          = opposite_team($piece['team']);
 	$possible_movements     = [
-		'movements' =>      [],
+		'movements'      => [],
 		'attack_squares' => [],
 	];
 	$directions             = [
@@ -283,8 +284,7 @@ function king_movements(array $board, array $cor){
 		return $possible_movements;
 	}
 
-
-	// special movements
+	// castling movements
 	foreach ($towers_x as $tower_x) {
 		$tower_cor = $cor;
 		$tower_cor['x'] = $tower_x;
@@ -304,12 +304,12 @@ function king_movements(array $board, array $cor){
 function get_movements(array $board, array $cor)
 {
 	/**
-	 * get the movements for a piece
+	 * Get the movements for a piece based on their coordinates
 	 * 
 	 * @param array the board array
 	 * @param array the location of the piece
 	 * 
-	 * @return array array with all the movements & attack squares 
+	 * @return array array with the movements & attack squares for that piece
 	*/
 
 	$piece = get_piece($board, $cor);
@@ -350,7 +350,7 @@ function get_movements(array $board, array $cor)
 function get_value($name)
 {
 	/**
-	 * get the value for a piece
+	 * Get the value for a piece.
 	 * 
 	 * @param string the name of the piece
 	 * 
@@ -384,7 +384,7 @@ function get_value($name)
 function valid_castling(array $board, array $king_cor, array $tower_cor) {
 	/**
 	 * Check if castling movement is possible.
-     * Used for the king movements calculation
+     * Used for the king movements calculations.
 	 * 
 	 * @param array the board array
 	 * @param array the location of the king
@@ -407,5 +407,4 @@ function valid_castling(array $board, array $king_cor, array $tower_cor) {
 	}
 	return true;
 }
-
 ?>

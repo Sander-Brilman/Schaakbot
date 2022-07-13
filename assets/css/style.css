@@ -1,11 +1,6 @@
 @keyframes flyFromAbove {
-	0% {
-		top: -500px;
-	}
-
-	100% {
-		top: 200px;
-	}
+	0%   {top: -500px;}
+	100% {top: 200px;}
 }
 
 @font-face {
@@ -14,14 +9,13 @@
 }
 
 :root {
-	--body-background: 	rgb(33, 33, 33);
-	--background-header:	rgb(44, 44, 44);
-	--background-menu: 	rgb(55, 55, 55);
-	--light-grey:		rgb(105, 105, 105);
-	--header-text-color:rgb(255, 255, 255);
-	--text-color:		rgb(160 160 160);
-	--theme-color:		rgb(0, 179, 205);
-
+	--body-background: 	 rgb(33, 33, 33);
+	--background-header: rgb(44, 44, 44);
+	--background-menu: 	 rgb(55, 55, 55);
+	--light-grey:		 rgb(105, 105, 105);
+	--header-text-color: rgb(255, 255, 255);
+	--text-color:		 rgb(160 160 160);
+	--theme-color:		 rgb(0, 179, 205);
     --difficulty-gradiant: linear-gradient(90deg, #33c131, yellow, rgb(255, 0, 0));
 }
 

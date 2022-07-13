@@ -60,7 +60,6 @@ form {
 label > p {
     font-size: 25px;
     color: rgba(0, 0, 0, 0);
-
     animation: appear_text 1.5s ease-in-out 3.5s 1 normal forwards;
 }
 
@@ -97,5 +96,4 @@ button {
     margin: 0px;
     margin-left: -35px;
     animation: appear_input 1.5s ease-in 5s 1 normal forwards;
-
 }

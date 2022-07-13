@@ -58,10 +58,10 @@ function pieceAnimation(from, to, special = true) {
 		data.css('left', '0px');
 		data.css('top', '0px');
 
-        if (special) {
-            fromElement.addClass("move-from");
-            toElement.addClass("move-to");
-        }
+		if (special) {
+			fromElement.addClass("move-from");
+			toElement.addClass("move-to");
+		}
 
 		if (special && $(`#${fromCor} div`).attr('data-piece') == 'pawn') {
 			if (toCor.y == 0 || toCor.y == 7) {
@@ -73,7 +73,6 @@ function pieceAnimation(from, to, special = true) {
 
 		toElement.html('');
 		toElement.append(data);
-
 	}, 500);
 }
 
@@ -85,11 +84,9 @@ async function makeBoardInteractive() {
 			let piecesObject = JSON.parse(data);
 
 			for (let pieceCor in piecesObject) {
-
 				let movements = piecesObject[pieceCor];
 				let square = $(`#${pieceCor}`);
 				square.on('click', () => {
-
 					resetSquares();
 
 					square.addClass('focus');
@@ -114,8 +111,8 @@ async function move(from, to) {
 	}
 
 	$.post(url, postData, function(data, state) {
-
 		botMove = JSON.parse(data);
+
 		setTimeout(() => {
 
 			if (botMove['move'] != undefined) {
@@ -136,7 +133,6 @@ async function move(from, to) {
 			}
 
 		}, 300);
-
 	});
 
 	resetSquares();
@@ -148,7 +144,7 @@ async function move(from, to) {
 
 function resetSquares() {
 	$('.hint-from').removeClass("hint-from");
-    $('.move-from').removeClass('move-from');
+	$('.move-from').removeClass('move-from');
 	$('.move-to').removeClass('move-to');
 	$('.hint-to').removeClass("hint-to");
 	$('.focus').removeClass('focus');
@@ -171,8 +167,42 @@ function createCor(cor) {
 function showEndScreen(text) {
 	setTimeout(() => {
 		$('#overlay').addClass('show');
-        $('#overlay > h2').html(text);
+		$('#overlay > h2').html(text);
 	}, 800)
+}
+
+function reloadCapturedPieces() {
+	const teams = ['top', 'bottom'];
+	const piecesInTeam = {
+		pawn:  	8,
+		horse:  2,
+		bishop: 2,
+		tower:  2,
+		queen:  1,
+		king:  	1,
+	};
+	const icons = {
+		tower: 	'<i class="fa-solid fa-chess-rook-piece"></i>',
+		horse: 	'<i class="fa-solid fa-chess-knight"></i>',
+		bishop: '<i class="fa-solid fa-chess-bishop"></i>',
+		queen: 	'<i class="fa-solid fa-chess-queen"></i>',
+		king: 	'<i class="fa-solid fa-chess-king"></i>',
+		pawn: 	'<i class="fa-solid fa-chess-pawn"></i>',
+	};
+
+	teams.forEach(team => {
+		let html = '';
+		for (let pieceName in piecesInTeam) {
+			let total 	= piecesInTeam[pieceName];
+			let current = total - $(`.${team}[data-piece=${pieceName}]`).toArray().length;
+
+			for (let i = 0; i < current; i++) {
+				html += icons[pieceName];
+			}
+		}
+
+		$(`.captured.${team}`).html(html);
+	});
 }
 
 document.getElementById("hint").onclick = function() {
@@ -198,35 +228,33 @@ document.getElementById("undo").onclick = function() {
 
 		$.post(url, postData, function(data, state) {
 
-            if (data == '') {
-                return;
-            }
+			if (data == '')  return;
 
 			animationData   = JSON.parse(data);
-            let delay       = 100;
+			let delay       = 100;
 
-            for (let animation in animationData) {
-                animation = animationData[animation];
+			for (let animation in animationData) {
+				animation = animationData[animation];
 
-                setTimeout(() => {
-                    $(`#${animation.from}`).html(animation.square_state.current);
-                    pieceAnimation(animation.from, animation.to, false);
+				setTimeout(() => {
+					$(`#${animation.from}`).html(animation.square_state.current);
+					pieceAnimation(animation.from, animation.to, false);
 
-                    setTimeout(() => {
-                        $(`#${animation.from}`).append(animation.square_state.before);
-                    }, 550);
-                }, delay);
+					setTimeout(() => {
+						$(`#${animation.from}`).append(animation.square_state.before);
+					}, 550);
+				}, delay);
 
-                delay += 600;
-            }
+				delay += 600;
+			}
 
-            setTimeout(() => {
-                resetSquares();
-                makeBoardInteractive();
-            }, delay);
+			setTimeout(() => {
+				resetSquares();
+				makeBoardInteractive();
+				reloadCapturedPieces();
+			}, delay);
 		});
-
-        resetSquares();
+		resetSquares();
 	})
 }
 

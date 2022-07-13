@@ -2,7 +2,8 @@
 function create_cor($string)
 {
 	/**
-	 * Coordinate string to array
+	 * Transforms a coordinate string to a coordinate array.
+     * This makes it easier to calculate movements with
 	 * if the value is already an array it will be returned unchanged
 	 * 
 	 * @param string coordinate string 
@@ -22,17 +23,13 @@ function create_cor($string)
 
 function cor_string($cor) {
 	/**
-	 * Coordinate array to string
-	 * 
+	 * Coordinate array back to string. 
+     * 
 	 * @param array coordinate string 
 	 * 
 	 * @return string array with X and Y
 	*/
-	if (is_array($cor)) {
-		return $cor['x'] . '-' . $cor['y'];
-	} else {
-		return $cor;
-	}
+    return is_array($cor) ? $cor['x'] . '-' . $cor['y'] : $cor;
 }
 
 function valid_cor(array $cor)
@@ -62,10 +59,10 @@ function opposite_team(string $team)
 function get_piece(array $board, $cor)
 {
 	/**
-	 * Get the piece data
+	 * Get the piece data from a loaction on the board
 	 * 
 	 * @param array the board array
-	 * @param array coordinates array
+	 * @param array the location you want the data from
 	 * 
 	 * @return array a array containing the piece information
 	 */
@@ -76,10 +73,10 @@ function place_piece(array &$board, $cor, string $piece_name, string $piece_team
 {
 	/**
 	 * Place a piece on the board.
-	 * Movements are not included yet.
+	 * Movements are not included.
 	 * 
 	 * @param array the board array
-	 * @param array coordinates array
+	 * @param array coordinates for where to put the piece
 	 * @param string king | queen | tower | bishop | horse | pawn
 	 * @param string  top | bottom
 	 * 
@@ -98,7 +95,8 @@ function place_piece(array &$board, $cor, string $piece_name, string $piece_team
 
 function remove_piece(array &$board, $cor) {
 	/**
-	 * Removes a piece from the board 
+	 * Removes a piece from the board.
+     * The array keys will still be there but they will be empty.
 	 * 
 	 * @param array the board array
 	 * @param array coordinates array
@@ -112,7 +110,7 @@ function move_piece(array &$board, $old_cor, $new_cor, bool $update_movements = 
 {
 	/**
 	 * Move a piece from the old coordinates to the new coordinates.
-	 * Automatically updates the movements of the pieces related.
+	 * Automatically updates the movements.
 	 * 
 	 * @param array the board array
 	 * @param array/string the current location of the piece
@@ -126,7 +124,7 @@ function move_piece(array &$board, $old_cor, $new_cor, bool $update_movements = 
 	$new_cor			= create_cor($new_cor);
 	$changed_squares 	= [$old_cor, $new_cor];
 
-	// castling
+	// code for castling
     $castling_check = check_castling($board, $old_cor, $new_cor);
     if ($castling_check !== false) {
 
@@ -139,10 +137,9 @@ function move_piece(array &$board, $old_cor, $new_cor, bool $update_movements = 
 	place_piece($board, $new_cor, $piece['name'], $piece['team']);
 	remove_piece($board, $old_cor);
 
+    // replace a pawn with a queen
     if ($piece['name'] == 'pawn' && ($new_cor['y'] == 0 || $new_cor['y'] == 7)) {
-
 		place_piece($board, $new_cor, 'queen', $piece['team']);
-
 	}
 
 	if ($piece['name'] == 'king') {
@@ -159,7 +156,7 @@ function move_piece(array &$board, $old_cor, $new_cor, bool $update_movements = 
 function valid_move(array $board, string $team, $old_cor, $new_cor, array $king_cor = null) {
 	/**
 	 * Validates if a move can be made without the king being in check.
-	 * Used for filtering impossible moves
+	 * Used for filtering impossible moves.
 	 * 
 	 * @param array the board array
 	 * @param string the team of the piece
@@ -272,12 +269,12 @@ function related_pieces(array $board, $square_cor)
 {
 	/**
 	 * Gets all pieces that are related to the given coordinates.
-	 * Uses the same technique as the is_square_attacked function. 
+	 * Uses almost the same technique as the is_square_attacked function. 
 	 * 
 	 * @param array the board array
 	 * @param array the coordinates it gets the squares from
 	 * 
-	 * @return array
+	 * @return array a array with coordinates
 	 */
 	$squares = [];
 	$directions_normal = [
@@ -331,7 +328,6 @@ function related_pieces(array $board, $square_cor)
 		}
 	}
 
-
 	// loop for horses
 	foreach ($directions_horse as $direction) {
 		$horse_cor = $square_cor;
@@ -346,7 +342,6 @@ function related_pieces(array $board, $square_cor)
 			$squares[] = $horse_cor;
 		}
 	}
-	
 
 	return $squares;
 }
@@ -379,6 +374,7 @@ function update_movements(array &$board, array $changed_squares = [])
 		}
 
 	} else if (sizeof($changed_squares) == 0) {
+        // select pieces with no movements key set + their related pieces
 
 		foreach ($board['squares'] as $cor_str => $piece) {
 			if ($piece['name'] != '' && !isset($piece['movements'])) {
@@ -392,6 +388,7 @@ function update_movements(array &$board, array $changed_squares = [])
 		}
 
 	} else {
+        // select the pieces related to the changed squares
 
 		foreach ($changed_squares as $cor) {
 			$cor = create_cor($cor);
@@ -407,11 +404,13 @@ function update_movements(array &$board, array $changed_squares = [])
 
 	}
 
+    // always select both team kings to prevent unforseen bugs.
     foreach ($teams as $team) {
         $king = $board[$team.'_king'];
         $update_pieces[cor_string($king)] = $king;
     }
 
+    // update the selected pieces
 	foreach ($update_pieces as $cor_str => $cor) {
 		$movements = get_movements($board, $cor);
 		$piece = get_piece($board, $cor);
@@ -429,12 +428,12 @@ function update_movements(array &$board, array $changed_squares = [])
 
 function create_board() {
 	/**
-	 * create a new board with all pieces and movements set default.
+	 * Create a new board with all pieces and movements set default.
 	 * 
 	 * @return array a new board array
 	*/
-	$custom = false;
-	$custom = true;
+	$debug = false;
+
 	$board = [
 		'squares' => [],
 		'in_check'  => false,
@@ -458,16 +457,10 @@ function create_board() {
 		}
 	}
 
-	if ($custom) {
-        place_piece($board,'0-6', 'pawn', 'bottom', false);
-        place_piece($board,'0-7', 'tower', 'bottom',false);
-        place_piece($board,'1-6', 'pawn', 'bottom', false);
-        place_piece($board,'3-6', 'pawn', 'bottom', false);
-        place_piece($board,'3-7', 'king', 'bottom', false);
-        place_piece($board,'5-6', 'pawn', 'bottom', false);
-        place_piece($board,'7-0', 'king', 'top',    false);
-        place_piece($board,'7-6', 'pawn', 'bottom', false);
-        place_piece($board,'7-7', 'tower', 'bottom',false);
+	if ($debug) {
+
+        // custom start senario for debugging purposes
+
 	} else {
 		foreach ($teams as $team => $y_array) {
 			// pawns
@@ -477,14 +470,12 @@ function create_board() {
 
 			// other pieces
 			foreach ($pieces_placement as $name => $cor_x) {
-
 				if (is_array($cor_x)) {
 					place_piece($board, $cor_x[0].'-'.$y_array['other'], $name, $team, false);
 					place_piece($board, $cor_x[1].'-'.$y_array['other'], $name, $team, false);
 				} else {
 					place_piece($board, $cor_x.'-'.$y_array['other'], $name, $team, false);
 				}
-
 			}
 		}
 	}
@@ -493,10 +484,11 @@ function create_board() {
 		if ($piece['name'] == '') {
 			continue;
 		}
-		$cor = create_cor($cor_str);
 
-		$movements = get_movements($board, $cor);
-		$board['squares'][$cor_str]['movements'] = 		$movements['movements'];
+		$cor        = create_cor($cor_str);
+		$movements  = get_movements($board, $cor);
+
+		$board['squares'][$cor_str]['movements']      = $movements['movements'];
 		$board['squares'][$cor_str]['attack_squares'] = $movements['attack_squares'];
 	}
 	return $board;
@@ -506,7 +498,7 @@ function check_castling(array $board, array $from, array $to)
 {
     /**
 	 * Checks if a move is a castling move.
-     * Is used for checking if a castling is nessesary
+     * Is used for checking if a extra castling move is nessesary
 	 * 
      * @param array the board array
      * @param array coordinate array
@@ -531,9 +523,9 @@ function generate_piece_html(string $name, string $team)
 {
     /**
 	 * Generates the html for a piece.
-     * Is used for regenerating html with for the frond-end
+     * Is used for regenerating the html for the frond-end when loading the page or for the undo animations.
 	 * 
-     * @param string the name of the piece: pawn|horse|bishop|tower|queen|king
+     * @param string the name of the piece: pawn | horse | bishop | tower | queen | king
      * @param string the team of the piece
      * 
 	 * @return string
@@ -549,11 +541,4 @@ function generate_piece_html(string $name, string $team)
 
     return $name == '' ? '' : '<div data-piece="'.$name.'" class="'.$team.'">'.$icons[$name].'</div>';
 }
-
-// short function names for debugging
-$cc = "create_cor";
-$cs = "cor_string";
-$gp = "get_piece";
-$pp = "place_piece";
-$mp = "move_piece";
 ?>
