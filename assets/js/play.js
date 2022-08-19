@@ -262,3 +262,13 @@ document.getElementById("undo").onclick = function() {
 }
 
 makeBoardInteractive();
+
+function scaleBoard() {
+	$('#board').css('height', `${parseFloat($('td').css('width')) * 8}px`);
+}
+
+$(window).on('resize', function(){
+	scaleBoard();
+});
+
+scaleBoard();
