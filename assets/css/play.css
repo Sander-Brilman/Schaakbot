@@ -266,8 +266,7 @@ body {
 
 #board {
 	border-spacing: 0px;
-    width: 100%;
-	aspect-ratio: 1 / 1;
+    	width: 100%;
 }
 
 td {
