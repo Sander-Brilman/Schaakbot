@@ -76,10 +76,14 @@ function board_score(array $board, string $team_turn, string $get_score_for = nu
 		'top' 		=> 0,
 		'bottom' 	=> 0,
 	];
+    $kings_under_attack = [
+        'top'       => false,
+        'bottom'    => false,
+    ];
 
 	$king_under_attack 		= -50;
 	$check_mate_value 		= -999;
-	$attacked_by_piece		= -20;
+	$attacked_by_piece		= -25;
 	$opposite_team 			= opposite_team($team_turn);
 	$end_game 				= false;
 
@@ -95,6 +99,7 @@ function board_score(array $board, string $team_turn, string $get_score_for = nu
 
 	foreach ($movements_count as $team => $number_of_movements) {
 		$king_attacked = is_square_attacked($board, $team, $board[$team.'_king']);
+        $kings_under_attack[$team] = $king_attacked;
 		if ($king_attacked) {
 			$score[$team] += $king_under_attack;
 		}
@@ -164,24 +169,34 @@ function board_score(array $board, string $team_turn, string $get_score_for = nu
 		}
 
 		if (sizeof($piece['defenders']) == 0) {
-			$danger_cases[$cor_str] = true;
+			$danger_cases[$cor_str] = get_value($piece['name']);
 			continue;
 		}
 
+        if (sizeof($piece['defenders']) < sizeof($piece['attackers'])) {
+            $danger_cases[$cor_str] = get_value($piece['name']);   
+            $score[$team_turn] += $attacked_by_piece;
+            continue;
+        }
+ 
 		foreach ($piece['attackers'] as $cor) {
 			$attacker_cor_str = cor_string($cor);
 			$attacker_value = get_value(get_piece($board, $attacker_cor_str)['name']);
-			
+	
 			if ($attacker_value < $piece['value']) {
-				$danger_cases[$cor_str] = true;
+				$danger_cases[$cor_str] = get_value($piece['name']);   
 				break;
 			}
 		}
 	}
 
-	if (sizeof($danger_cases) > 1) {
-		$score[$team_turn] += ((sizeof($danger_cases) - 1) * $attacked_by_piece);
-	}
+    if ($kings_under_attack[$team_turn]) {
+        $score[$team_turn] -= array_shift($danger_cases);
+    } else {
+        if (sizeof($danger_cases) > 1) {
+            $score[$team_turn] += ((sizeof($danger_cases) - 1) * $attacked_by_piece);
+        }
+    }
 
 	$opposite_score_team = opposite_team($get_score_for);
 	return $full_array ? $score : $score[$get_score_for] - $score[$opposite_score_team];
@@ -279,14 +294,24 @@ function reqursive_calculation(array $board, string $team_turn, int $current, in
 	//
 	foreach ($best_moves as $move_data) {
 
+        // echo BR;
+        // echo BR;
+        // echo BR;
+        // dump('score for '.from_to($move_data['move']).': '.$move_data['score']);
+
 		$enemy_move	= best_movements($move_data['board'], $opposite_team, 2);
 
 		if ($enemy_move == 'checkmate') {
 			$return_move = ['score' => 999999, 'move' => $move_data['move'], 'status' => 'checkmate'];
 			break;
 		}
+
+
 		
 		$enemy_move = $enemy_move[0];
+
+        // dump('response move: '.from_to($enemy_move['move']).': '.$enemy_move['score']);
+
 		$new_board 	= $enemy_move['board'];
 		$move 		= $enemy_move['move'];
 
@@ -302,6 +327,14 @@ function reqursive_calculation(array $board, string $team_turn, int $current, in
 		 *		$final_move = best_movements($new_board, $team_turn, 1)[0];
 		 *	}
 		 */
+
+        
+		// if ($current < $limit) {
+		//     $final_move = reqursive_calculation($new_board, $team_turn, $current + 1, $limit);
+		// } else {
+		//     $final_move = best_movements($new_board, $team_turn, 1)[0];
+		// }
+		 
 
 		if ($return_move == null || $return_move['score'] < $score) {
 			$return_move = ['score' => $score, 'move' => $move_data['move'], 'status' => 'active'];

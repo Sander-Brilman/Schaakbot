@@ -5,29 +5,45 @@
 
 $board = $_SESSION['game_data']['board'];
 
-$color_2 	= $_SESSION['game_data']['color'] == 'white' ? 'rgb(135 91 44)' : 'wheat';
-$color_1 	= $_SESSION['game_data']['color'] == 'white' ? 'wheat' : 'rgb(135 91 44)';
-$css_vars 	= '
---piece-color: '.$_SESSION['game_data']['color'].';
---shadow-color: '.$_SESSION['game_data']['shadow'].';
---square-color-1: '.$color_1.';
---square-color-2: '.$color_2.';
-';
-?>
-<div class="main" style="<?= $css_vars ?>">
-<table id="board" style="width: 500px; height: 500px">
-	<?php
-	for ($i=0; $i < 8; $i++) {
-		echo '<tr>';
-			for ($j=0; $j < 8; $j++) {
-				$cor = "$j-$i";
-				$piece = get_piece($board, $cor);
-				$content = $piece['name'] != '' ?'<div style="--piece-color: '.$_SESSION['game_data']['color'].'; --shadow-color: '.$_SESSION['game_data']['shadow'].';" class='.$piece['team'].'>'.$icons[$piece['name']].'</div>' : '';
-				echo "<td title='$cor' id='$cor'>$content</td>";
-			}
-		echo '</tr>';
-	}
-	?>
-</table>
-<link rel="stylesheet" href="assets/css/play.css">
-</div>
+
+move_piece($board, '0-5', '1-6');
+
+// dump(calculate_move($board, 'top'));
+
+
+
+// echo export_board($board);
+
+echo '<link rel="stylesheet" href="assets/css/play.css">';
+
+display_board($board);
+
+$timer = start_timer();
+
+dump(calculate_move($board, 'top'));
+
+// $moves = best_movements($board,'top', 9999);
+
+// foreach ($moves as $move) {
+//     dump(from_to($move['move']).': '.$move['score']);
+// }
+
+end_timer($timer, 'calculating move');
+
+exit;
+
+$s1 = $board;
+$s2 = $board;
+
+move_piece($s1, '2-1', '2-3');
+move_piece($s2, '0-0', '1-0');
+
+// move_piece($s1, '1-6', '3-4');
+display_board($s1, 's1: '.board_score($s1, 'top', 'top'));
+
+echo BR;
+echo BR;
+echo BR;
+
+// move_piece($s2, '1-6', '3-4');
+display_board($s2, 's2: '.board_score($s2, 'top', 'top'));

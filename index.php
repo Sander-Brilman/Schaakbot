@@ -6,7 +6,8 @@ require_once("assets/php/pieces_data.php");
 require_once("assets/php/chess_bot_functions.php");
 
 $url_array 	= $_SERVER['REQUEST_URI'];
-$url_array 	= str_replace("/phprunning/website/subdomain_projects/chess/newFolders/versions/v3/", '', $url_array);
+$replace    = $_SERVER['HTTP_HOST'] == 'localhost' ? '/php/website/subdomain_projects/chess/newFolders/versions/v3/' : '/versions/v3/';
+$url_array 	= str_replace($replace, '', $url_array);
 $url_array 	= explode('/', $url_array);
 
 foreach ($url_array as $key => $value) {
@@ -30,9 +31,12 @@ foreach ($custom_pages as $title => $script) {
 	}
 }
 
-// Special case
+// Special cases
 if (!isset($_COOKIE['name'])) {
     $include = 'get_name.php';
+} else if ($url_array[0] != 'nieuw-spel' && !isset($_SESSION['game_data']['board'])) {
+	header('location: nieuw-spel');
+	exit;
 }
 
 $icons = [

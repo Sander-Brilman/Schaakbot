@@ -1,8 +1,4 @@
 <?php
-if (!isset($_SESSION['game_data']['board'])) {
-	header('location: nieuw-spel');
-	exit;
-}
 $board = $_SESSION['game_data']['board'];
 
 // set overlay data in case of page refreshing
@@ -132,6 +128,8 @@ $css_vars 	= '
 
 if (!$_SESSION['game_data']['begins']) {
 
+    dump('begins');
+
     $move = calculate_move($board, 'top')['move'];
 
     $_SESSION['game_data']['board'] = $board;
@@ -154,7 +152,7 @@ if (!$_SESSION['game_data']['begins']) {
         'castling' => check_castling($board, $move['from'], $move['to']),
     ];
 
-    move_piece($board, $move['from'], $move['to']);
+    move_piece($_SESSION['game_data']['board'], $move['from'], $move['to']);
     ?>
     <script>
         setTimeout(() => {
