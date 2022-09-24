@@ -84,7 +84,7 @@ if (isset($_POST['new_game'])) {
 		'color'     	=> $color,
 		'shadow'    	=> $shadow,
 		'begins'    	=> $begins,
-		'board'     	=> create_board(),
+		'board'     	=> create_board($color),
 
 		'status'    	=> 'active',
 		'winner'    	=> 'undefined',

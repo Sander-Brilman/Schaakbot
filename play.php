@@ -184,4 +184,16 @@ if (!$_SESSION['game_data']['begins']) {
     </script>
     <?php
 }
+
+if ($_SESSION['game_data']['begins']) {
+    ?>
+    <style>
+        td:nth-child(even) { background-color: var(--square-color-2); }
+        td:nth-child(odd) {	background-color: var(--square-color-1); }
+
+        tr:nth-child(even)>td:nth-child(odd) { background-color: var(--square-color-2); }
+        tr:nth-child(even)>td:nth-child(even) {	background-color: var(--square-color-1); }
+    </style>
+    <?php
+}
 ?>
