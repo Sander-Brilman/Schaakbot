@@ -128,8 +128,6 @@ $css_vars 	= '
 
 if (!$_SESSION['game_data']['begins']) {
 
-    dump('begins');
-
     $move = calculate_move($board, 'top')['move'];
 
     $_SESSION['game_data']['board'] = $board;
