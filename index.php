@@ -1,79 +1,64 @@
 <?php
 session_start();
-include_once('assets/php/debug.php');
-require_once("assets/php/functions.php");
-require_once("assets/php/pieces_data.php");
-require_once("assets/php/chess_bot_functions.php");
+require_once('config.php');
 
-$url_array 	= $_SERVER['REQUEST_URI'];
-$replace    = $_SERVER['HTTP_HOST'] == 'localhost' ? '/php/website/subdomain_projects/chess/newFolders/versions/v3/' : '/versions/v3/';
-$url_array 	= str_replace($replace, '', $url_array);
-$url_array 	= explode('/', $url_array);
+include_once('assets/php/debug_functions.php');
+include_once('assets/php/functions.php');
+include_once('assets/php/page_builder.php');
 
-foreach ($url_array as $key => $value) {
-	$url_array[$key] = explode('?', $value)[0];
-}
+include("assets/php/process_form.php");
+include("assets/php/redirects.php");
 
-include("assets/php/process_post.php");
+$page_info = get_page_info($url_array);
 
-$include      = 'play.php';
-$custom_pages = [
-	'spelen'        => 'play.php',
-	'nieuw-spel'    => 'new_game.php',
-	'testen'        => 'testing.php',
-	'test'          => 'testing.php',
-];
-
-foreach ($custom_pages as $title => $script) {
-	if ($url_array[0] == $title) {
-		$include = $script;
-		break;
-	}
-}
-
-// Special cases
-if (!isset($_COOKIE['name'])) {
-    $include = 'get_name.php';
-} else if ($url_array[0] != 'nieuw-spel' && !isset($_SESSION['game_data']['board'])) {
-	header('location: nieuw-spel');
-	exit;
-}
-
-$icons = [
-	'tower' 	=> '<i class="fa-solid fa-chess-rook-piece"></i>',
-	'horse'	 	=> '<i class="fa-solid fa-chess-knight"></i>',
-	'bishop' 	=> '<i class="fa-solid fa-chess-bishop"></i>',
-	'queen' 	=> '<i class="fa-solid fa-chess-queen"></i>',
-	'king' 		=> '<i class="fa-solid fa-chess-king"></i>',
-	'pawn' 		=> '<i class="fa-solid fa-chess-pawn"></i>',
-];
-
+$css_vars = "
+--theme-color: $theme_color;
+";
 ?>
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="<?= explode('_', $locate)[0] ?>" style="<?= $css_vars ?>">
 	<head>
+        <!-- title -->
+		<?= $page_info['title'] ?>
+
+
+		<!-- meta tags -->
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="title" content="Schaken versie v3 | Sander brilman">
+		<?= $page_info['metatags'] ?>
 
-		<link rel="stylesheet" href="assets/css/icons.css">
-		<link rel="stylesheet" href="assets/css/style.css">
-		<?php 
-        $file = 'assets/css/'.str_replace('.php', '.css', $include);
-		if (file_exists($file)) echo '<link rel="stylesheet" href="'.$file.'">';
 
-        $file = 'assets/js/'.str_replace('.php', '.js', $include);
-		if (file_exists($file)) echo '<script src="'.$file.'" defer></script>';
+        <!-- canonical url's -->
+        <?= $page_info['canonical_url'] ?>
+
+
+		<!-- stylesheets -->
+		<link rel="stylesheet" href="<?= url('/assets/css/icons.css') ?>">
+		<?php
+		foreach ($page_info['files']['css'] as $path)
+			echo '<link rel="stylesheet" href="'.url($path).'">';
 		?>
-		<script src="assets/js/jQuery.js"></script>
 
-		<title>Schaken - v3 | Sander Brilman</title>
+
+		<!-- javascript -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+		<?php
+		foreach ($page_info['files']['js'] as $path)
+			echo '<script src="'.url($path).'" async defer></script>';
+		?>
+        
 	</head>
 
 	<body>
 		<?php
-		include $include;
+		include('pages/blocks/header.php');
+
+		foreach ($page_info['files']['php'] as $path) {
+			include($path);
+		}
+
+		include('pages/blocks/footer.php');
 		?>
 	</body>
 </html>

@@ -3,11 +3,11 @@ $board = $_SESSION['game_data']['board'];
 
 // set overlay data in case of page refreshing
 if ($_SESSION['game_data']['status'] == 'active') {
-    $overlay_text = 'Oeps er gaat iets niet helemaal goed..';
+    $overlay_text = 'Oeps er is iets vreselijk mis gegaan..';
     $show_overlay = '';
 } else {
     if ($_SESSION['game_data']['status'] == 'checkmate') {
-        $overlay_text = $_SESSION['game_data']['winner'].' heeft gewonnen';
+        $overlay_text = $_SESSION['game_data']['winner'].' heeft gewonnen!';
     } else {
         $overlay_text = 'Gelijkspel';
     }
@@ -60,9 +60,10 @@ $css_vars 	= '
 ?>
 <div class="main" style="<?= $css_vars ?>">
 	<header>
-		<a href="http://schaken.sanderbrilman.nl/index.php?version-select=true"><i class="fa-duotone fa-chevron-left"></i> Versie overzicht</a>
+		<a href="http://schaken.sanderbrilman.nl/index.php?version-select=true"><i class="fa-duotone fa-chevron-left"></i> Vorige versies</a>
 		<h1>Schaken</h1>
-		<a href="http://schaken.sanderbrilman.nl/index.php?version-select=true"><i class="fa-duotone fa-chevron-left"></i> Versie overzicht</a>
+        <!-- this is here to make sure the width of the text is the same on both sides -->
+		<a target="_blank" href="https://github.com/Sander-Brilman/Chess-bot-english">Bekijk op Github <i class="fa-duotone fa-chevron-right"></i></a>
 	</header>
 	<div class="content">
 		<div class="game-container">
@@ -96,7 +97,7 @@ $css_vars 	= '
                 </table>
                 <div id="overlay" class="<?= $show_overlay ?>">
                     <h2><?= $overlay_text ?></h2>
-                    <a href="nieuw-spel">Nieuw Spel</a>
+                    <a href="<?= url('new-game') ?>">New game</a>
                 </div>
             </div>
 
@@ -120,7 +121,7 @@ $css_vars 	= '
 			<div class="splitter"></div>
 			<button id="undo">Undo</button>
 			<button id="hint">Hint</button>
-			<button><a href="nieuw-spel">Nieuw Spel</a></button>
+			<button><a href="<?= url('new-game') ?>">Nieuw spel</a></button>
 		</div>
 	</div>
 </div>
@@ -130,7 +131,6 @@ if (!$_SESSION['game_data']['begins']) {
 
     $move = calculate_move($board, 'top')['move'];
 
-    $_SESSION['game_data']['board'] = $board;
     $_SESSION['game_data']['begins'] = true;
 
     $from   = cor_string($move['from']);
@@ -150,7 +150,9 @@ if (!$_SESSION['game_data']['begins']) {
         'castling' => check_castling($board, $move['from'], $move['to']),
     ];
 
-    move_piece($_SESSION['game_data']['board'], $move['from'], $move['to']);
+    move_piece($board, $move['from'], $move['to']);
+
+    $_SESSION['game_data']['board'] = $board;
     ?>
     <script>
         setTimeout(() => {
@@ -180,18 +182,6 @@ if (!$_SESSION['game_data']['begins']) {
             }, 500);
         }, 300);
     </script>
-    <?php
-}
-
-if ($_SESSION['game_data']['begins']) {
-    ?>
-    <style>
-        td:nth-child(even) { background-color: var(--square-color-2); }
-        td:nth-child(odd) {	background-color: var(--square-color-1); }
-
-        tr:nth-child(even)>td:nth-child(odd) { background-color: var(--square-color-2); }
-        tr:nth-child(even)>td:nth-child(even) {	background-color: var(--square-color-1); }
-    </style>
     <?php
 }
 ?>

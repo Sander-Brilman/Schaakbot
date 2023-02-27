@@ -5,8 +5,6 @@
  */
 session_start();
 require_once('functions.php');
-require_once('pieces_data.php');
-require_once('chess_bot_functions.php');
 
 if (!isset($_SESSION['game_data'])) {
 	exit('ERROR: game not set');
@@ -35,7 +33,7 @@ if ($piece['team'] != 'bottom') {
 	exit('ERROR: wrong team idiot');
 }
 if (!in_array($to_cor, $movements['movements'])) {
-	exit('ERROR: illeagal movement');
+	exit('ERROR: illegal movement');
 }
 
 $_SESSION['game_data']['move_history'][] = [

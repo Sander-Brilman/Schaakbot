@@ -3,9 +3,9 @@ function incomplete_form()
 {
 	?>
 	<div class="error">
-		<h2>Er is iets mis gegaan..</h2>
-		<p>Oepsie.. Het lijkt erop dat er iets mis is gegaan bij het aanmaken van het spel. Probeer het nog een keer.</p>
-		<small>Komt dit vaker voor? <a href="https://sanderbrilman.nl/pages/contact.php">Laat het mij weten.</a></small>
+		<h2>Error</h2>
+		<p>Oeps. Het ziet er naar uit dat er iets fout is gegaan met het aanmaken van het spel. Probeer het nog een keer..</p>
+		<small>Komt dit vaker voor? <a href="https://sanderbrilman.nl/pages/contact.php">Laat het mij weten</a></small>
 	</div>
 	<?php
 }
@@ -27,7 +27,7 @@ if (isset($_GET['error'])) {
 ?>
 <div id="menu">
 	<header>
-		<h1>Nieuw Spel</h1>
+		<h1>Nieuw spel</h1>
 	</header>
 	<form method="post">
 		<div class="input-row">
@@ -64,18 +64,17 @@ if (isset($_GET['error'])) {
 				</div>
 
 				<div class="color-row">
-					<label for="custom_shadow">Schadow kleur</label>
+					<label for="custom_shadow">Schaduw kleur</label>
 					<input type="color" name="custom_shadow" id="custom_shadow" value="<?= $shadow ?>">
 				</div>
 			</div>
 		</div>
 
 		<div class="input-row">
-			<label for="level">Niveau<span> - 5</span></label>
+			<label for="level">Moeilijkheid<span> - 5</span></label>
 			<input type="range" name="level" min="0" max="1000" value="1000" id="level">
 		</div>
 
-		<input type="checkbox" checked hidden name="new_game" value="1">
-		<button type="submit">Speel</button>
+		<button name="new_game" value="<?= create_form_id('new_game') ?>" type="submit">Spelen!</button>
 	</form>
 </div>

@@ -1,16 +1,12 @@
 <?php
-/**
- * Handle all incomming forms
- */
-
-if (isset($_POST['username']) && strlen($_POST['username']) <= 15) {
-    setcookie('name', $_POST['username'], time() * 4, '/');
-    header('Location: nieuw-spel');
-    exit;
+if (check_form_id('get_name')) {
+    if (isset($_POST['username']) && strlen($_POST['username']) <= 15) {
+        setcookie('name', $_POST['username'], time() * 4, '/');
+        redirect('new-game');
+    }
 }
 
-if (isset($_POST['new_game'])) {
-
+if (check_form_id('new_game')) {
 	$required = [
 		'color',
 		'level',
@@ -20,8 +16,7 @@ if (isset($_POST['new_game'])) {
 
 	foreach ($required as $name) {
 		if (!isset($_POST[$name])) {
-			header('Location: nieuw-spel?error=incomplete');
-			exit;
+			redirect('new-game?error=incomplete');
 		}
 	} 
 
@@ -44,12 +39,12 @@ if (isset($_POST['new_game'])) {
 		['icon' => '<i class="fa-duotone fa-user-astronaut"></i>',          'name' => '*'],
 		['icon' => '<i class="fa-duotone fa-user-graduate"></i>',           'name' => 'Professor W.B'],
 		['icon' => '<i class="fa-duotone fa-user-injured"></i>', 			'name' => '*'],
-		['icon' => '<i class="fa-duotone fa-user-doctor"></i>',            	'name' => 'Docter *'],
+		['icon' => '<i class="fa-duotone fa-user-doctor"></i>',            	'name' => 'Doctor *'],
 		['icon' => '<i class="fa-duotone fa-user-cowboy"></i>',            	'name' => '*'],
 		['icon' => '<i class="fa-duotone fa-user-police"></i>', 			'name' => '*'],
 		['icon' => '<i class="fa-duotone fa-user-secret"></i>', 			'name' => 'Incognitor'],
 		['icon' => '<i class="fa-duotone fa-user-alien"></i>',            	'name' => '*'],
-		['icon' => '<i class="fa-duotone fa-user-crown"></i>',          	'name' => 'Koning *'],
+		['icon' => '<i class="fa-duotone fa-user-crown"></i>',          	'name' => 'King *'],
 		['icon' => '<i class="fa-duotone fa-user-ninja"></i>', 				'name' => 'Ninja *'],
 		['icon' => '<i class="fa-duotone fa-user-pilot"></i>', 				'name' => '*'],
 		['icon' => '<i class="fa-duotone fa-user-robot"></i>', 				'name' => 'Wall-E'],
@@ -65,12 +60,12 @@ if (isset($_POST['new_game'])) {
 		['icon' => '<i class="fa-duotone fa-mushroom"></i>',				'name' => '*'],
 		['icon' => '<i class="fa-duotone fa-baguette"></i>', 				'name' => 'Baguette'],
 		['icon' => '<i class="fa-duotone fa-skull"></i>', 					'name' => '*'],
-		['icon' => '<i class="fa-duotone fa-otter"></i>', 					'name' => '* de Otter'],
+		['icon' => '<i class="fa-duotone fa-otter"></i>', 					'name' => '* the Otter'],
 		['icon' => '<i class="fa-duotone fa-cat"></i>', 					'name' => 'Minoes'],
 	];
 
 	// random bot with random name
-	$names				= explode("\n", file_get_contents('assets/voornamen.txt'));
+	$names				= explode("\n", file_get_contents('assets/names.txt'));
 	$random_name		= $names[array_rand($names, 1)];
 	$random_bot			= $computer_users[array_rand($computer_users, 1)];
 	$random_bot['name'] = str_replace('*',  $random_name, $random_bot['name']);
@@ -84,14 +79,14 @@ if (isset($_POST['new_game'])) {
 		'color'     	=> $color,
 		'shadow'    	=> $shadow,
 		'begins'    	=> $begins,
-		'board'     	=> create_board($color),
+		'board'     	=> create_board(),
 
 		'status'    	=> 'active',
 		'winner'    	=> 'undefined',
 		'move_history'	=> [],
 	];
 
-	header('location: spelen');
-	exit; 
+	redirect('play');
 }
+
 ?>

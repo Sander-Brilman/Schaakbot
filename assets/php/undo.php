@@ -1,7 +1,5 @@
 <?php
 require_once('functions.php');
-require_once('pieces_data.php');
-require_once('chess_bot_functions.php');
 
 session_start();
 $all_moves  	 	= &$_SESSION['game_data']['move_history'];
