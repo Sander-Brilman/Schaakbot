@@ -47,14 +47,14 @@ function get_page_info(array $url_array = []): array
         case 'welcome':
             $php[] = 'get_name';
             $css[] = 'get_name';
-            $title = generate_title('Welcome stranger!', false);
+            $title = generate_title('Schaken');
             break;
 
         case 'play':
 			$php[] = 'play';
             $js[] = 'play';
             $css[] = 'play';
-            $title = generate_title('Play');
+            $title = generate_title('Spelen');
             break;
 
 		case '':
@@ -62,7 +62,7 @@ function get_page_info(array $url_array = []): array
             $php[] = 'new_game';
             $js[] = 'new_game';
             $css[] = 'new_game';
-            $title = generate_title('New game');
+            $title = generate_title('Nieuw spel');
             $canonical_url = generate_canonical_url('new-game');
             break;
 

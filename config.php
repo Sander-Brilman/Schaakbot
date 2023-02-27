@@ -6,11 +6,11 @@ $debug_ips = [
 $site_folder            = '/websites/Schaakbot/'; // Don't forget the '/' at the start & end 
 
 $theme_color            = '#00b3cd'; // css color notation
-$locate                 = 'en_US'; // language_TERRITORY format ('nl_NL' or 'en_US' for example)
+$locate                 = 'nl_NL'; // language_TERRITORY format ('nl_NL' or 'en_US' for example)
 
-$display_name                   = 'Sander\'s Chess'; // company / organization name
-$default_search_title           = 'My self-made chess bot - Play now'; // about 50 characters
-$default_website_description    = 'Play against my self made chess bot.'; // about 160 characters
+$display_name                   = 'Sander\'s schaak computer'; // company / organization name
+$default_search_title           = 'Mijn zelfgemaakte schaak computer, speel nu'; // about 50 characters
+$default_website_description    = 'Speel een potje schaken tegen mijn zelfgemaakte schaak computer.'; // about 160 characters
 
 
 $site_domain = $_SERVER['SERVER_NAME'];
